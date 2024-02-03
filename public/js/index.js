@@ -29,7 +29,7 @@ onAuthStateChanged(auth, (user) => {
     console.log(user);
     if (window.location.pathname == '/home.html') {
       console.log(window.location.pathname);
-      window.location.href = "../pages/home.html";
+      window.location.href = "../../pages/home.html";
     }
   } else {
     console.log('Not Logged');
@@ -45,6 +45,7 @@ export function createAndLoginUser() {
   createUserWithEmailAndPassword(auth, email, num_conselho)
     .then((userCredential) => {
       const user = userCredential.user;
+      console.log(user);
       loginUser();
 
     })
@@ -66,7 +67,7 @@ export function loginUser() {
 
       const user = userCredential.user;
       console.log(user);
-      window.location.href = "../pages/home.html";
+      window.location.href = "../../pages/home.html";
       // ...
     })
     .catch((error) => {
@@ -74,13 +75,13 @@ export function loginUser() {
       const errorMessage = error.message;
       console.log(errorCode);
       console.log(errorMessage);
-      alert("Número do conselho vinculado a outro e-mail.");  
+      alert("Número do conselho errado ou já está vinculado a outro e-mail vinculado a outro e-mail.");  
     });
 }
 
 export function signOutUser() {
   signOut(auth).then(() => {
-    window.location.href = "../index.html";
+    window.location.href = "../../index.html";
   }).catch((error) => {
     const errorCode = error.code;
     const errorMessage = error.message;

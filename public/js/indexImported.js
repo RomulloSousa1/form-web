@@ -1,4 +1,4 @@
-import { createUser, loginUser, signOutUser } from "./index.js";
+import { createAndLoginUser, loginUser, signOutUser } from "./index.js";
 
 window.createAndLoginUserImported = function createAndLoginUserImported() {
   createAndLoginUser();
