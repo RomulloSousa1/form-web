@@ -1,0 +1,19 @@
+#container-login {
+    height: 73vh;
+    width: 30vw;
+    box-shadow: -1px -1px 10px 1px lightgray, 1px 1px 10px 1px lightgray;
+}
+
+#container-principal {
+    height: 100vh;
+}
+
+#email,
+#num-conselho {
+    width: 20vw;
+}
+
+#btn-login {
+    width: 5vw;
+    background-color: lightskyblue;
+}
