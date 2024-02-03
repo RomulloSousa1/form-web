@@ -29,7 +29,7 @@ onAuthStateChanged(auth, (user) => {
     console.log(user);
     if (window.location.pathname == '/home.html') {
       console.log(window.location.pathname);
-      window.location.href = "../../pages/home.html";
+      window.location.href = "../pages/home.html";
     }
   } else {
     console.log('Not Logged');
@@ -67,7 +67,7 @@ export function loginUser() {
 
       const user = userCredential.user;
       console.log(user);
-      window.location.href = "../../pages/home.html";
+      window.location.href = "../pages/home.html";
       // ...
     })
     .catch((error) => {
@@ -81,7 +81,7 @@ export function loginUser() {
 
 export function signOutUser() {
   signOut(auth).then(() => {
-    window.location.href = "../../index.html";
+    window.location.href = "../index.html";
   }).catch((error) => {
     const errorCode = error.code;
     const errorMessage = error.message;
