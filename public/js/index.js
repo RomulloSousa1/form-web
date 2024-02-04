@@ -27,9 +27,9 @@ onAuthStateChanged(auth, (user) => {
   if (user) {
     const uid = user.uid;
     console.log(user);
-    if (window.location.pathname == 'formularios.html') {
+    if (window.location.pathname == '/formularios.html') {
       console.log(window.location.pathname);
-      window.location.href = "../formularios.html";
+      window.location.href = "../pages/formularios.html";
     }
   } else {
     console.log('Not Logged');
@@ -67,7 +67,7 @@ export function loginUser() {
 
       const user = userCredential.user;
       console.log(user);
-      window.location.href = "../formularios.html";
+      window.location.href = "../pages/formularios.html";
       // ...
     })
     .catch((error) => {
