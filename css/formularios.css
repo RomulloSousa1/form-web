@@ -1,0 +1,25 @@
+
+body {
+    background-color:linen ;
+}
+
+#container-principal {
+    height: 700px;
+}
+
+#row-principal {
+    height: 600px;
+}
+
+
+#form-1{
+    height: 250px;
+    box-shadow: -1px -1px 10px 1px lightgray, 1px 1px 10px 1px lightgray;
+    background-color: lightgoldenrodyellow;
+}
+
+#form-2{
+    height: 250px;
+    box-shadow: -1px -1px 10px 1px lightgray, 1px 1px 10px 1px lightgray;
+    background-color: lightcyan;
+}
