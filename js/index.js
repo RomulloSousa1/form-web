@@ -27,7 +27,7 @@ onAuthStateChanged(auth, (user) => {
   if (user) {
     const uid = user.uid;
     console.log(user);
-    if (window.location.pathname == '/formularios.html') {
+    if (window.location.pathname == 'formularios.html') {
       console.log(window.location.pathname);
       window.location.href = "../formularios.html";
     }
