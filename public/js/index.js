@@ -1,7 +1,7 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
 import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-analytics.js";
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js'
-import { getFirestore } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js'
+import { getFirestore, collection, addDoc, setDoc } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js'
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -27,7 +27,7 @@ onAuthStateChanged(auth, (user) => {
   if (user) {
     const uid = user.uid;
     console.log(user);
-    if (window.location.pathname == '/formularios.html') {
+    if (window.location.pathname == undefined) {
       console.log(window.location.pathname);
       window.location.href = "../pages/formularios.html";
     }
@@ -43,11 +43,20 @@ export function createAndLoginUser() {
 
 
   createUserWithEmailAndPassword(auth, email, num_conselho)
-    .then((userCredential) => {
+    .then(async (userCredential) => {
       const user = userCredential.user;
-      console.log(user);
-      loginUser();
-
+      try {
+        const docRef = await addDoc(collection(firestore, "users"), {
+          'email': email,
+          'num-conselho': num_conselho,
+          'id': user.uid,
+        });
+        console.log(user);
+        console.log("Documento criado com sucesso com o id: ", docRef.id);
+        loginUser();
+      } catch (e) {
+        console.error("Erro ao criar o documento: ", e);
+      }
     })
     .catch((error) => {
       loginUser();

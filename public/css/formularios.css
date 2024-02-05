@@ -1,25 +1,36 @@
-
 body {
-    background-color:linen ;
+    background-color: linen;
 }
 
 #container-principal {
-    height: 700px;
+    height: 78vh;
+}
+
+
+
+@media only screen and (max-width: 767px) {
+    footer {
+        height: 40vh;
+    }
+}
+
+@media only screen and (min-width: 768px) {
+    footer {
+        position: absolute;
+        bottom: 0;
+    }
 }
 
 #row-principal {
     height: 600px;
 }
 
-
-#form-1{
-    height: 250px;
+#form-1 {
+    height: 300px;
     box-shadow: -1px -1px 10px 1px lightgray, 1px 1px 10px 1px lightgray;
-    background-color: lightgoldenrodyellow;
 }
 
-#form-2{
-    height: 250px;
+#form-2 {
+    height: 300px;
     box-shadow: -1px -1px 10px 1px lightgray, 1px 1px 10px 1px lightgray;
-    background-color: lightcyan;
 }
