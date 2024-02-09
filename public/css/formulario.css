@@ -1,0 +1,20 @@
+#container-principal {
+    height: 78vh;
+}
+
+#lista-audios {
+    width: 45vw;
+}
+
+@media only screen and (max-width: 767px) {
+    #lista-audios {
+        width: 70vw;
+    }
+}
+
+@media only screen and (min-width: 768px) {
+    footer {
+        position: absolute;
+        bottom: 0;
+    }
+}

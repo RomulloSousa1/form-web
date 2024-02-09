@@ -1,11 +1,11 @@
 body {
-    background-color: linen;
+    background-color: rgb(224, 255, 255, 0.60);
+    
 }
 
 #container-principal {
     height: 78vh;
 }
-
 
 
 @media only screen and (max-width: 767px) {
@@ -25,12 +25,15 @@ body {
     height: 600px;
 }
 
+
 #form-1 {
     height: 300px;
     box-shadow: -1px -1px 10px 1px lightgray, 1px 1px 10px 1px lightgray;
+    background-color: white;
 }
 
 #form-2 {
     height: 300px;
     box-shadow: -1px -1px 10px 1px lightgray, 1px 1px 10px 1px lightgray;
+    background-color: white;
 }
