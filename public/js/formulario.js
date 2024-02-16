@@ -19,6 +19,8 @@ const auth = getAuth(app);
 const firestore = getFirestore(app);
 
 const apiUrl = "https://appraxi-evaluation-form.onrender.com";
+var jsonAux = window.localStorage.getItem('dataUser');
+var dataUser = JSON.parse(jsonAux);
 
 
 function verifierForm() {
@@ -27,21 +29,35 @@ function verifierForm() {
     if (form == 1) {
         getAllAudios();
     } else {
-        console.log('não foi');
+        getAllTranscriptions();
     }
 }
 
-auth.onAuthStateChanged(function (user ) {
-    console.log(user.email);
-})
-
-function sendTranscription() {
-    onAuthStateChanged(auth, (user) => {
-        if (user) {
-            
-        }
+async function sendTranscription(element) {
+    console.log(element.id);
+    console.log(element.parentElement.children[0].value);
+    await fetch(apiUrl + '/api/users/' + dataUser.id + '/transcriptions', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify([{
+            "audioId": element.id,
+            "answer": element.parentElement.children[0].value,
+        }])
     })
-
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Sem resposta');
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log(data);
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
 }
 
 async function getAllAudios() {
@@ -63,9 +79,22 @@ async function getAllAudios() {
 }
 
 async function getAllTranscriptions() {
-
+    auth.onAuthStateChanged((user) => {
+        fetch(apiUrl + '/api/users/' + dataUser.id + '/transcriptions')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Sem resposta');
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log(data);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+    })
 }
-
 
 function addCardAudio(idAudio, urlAudio) {
     const lista = document.getElementById('lista-audios');
@@ -109,7 +138,7 @@ function addCardAudio(idAudio, urlAudio) {
     saveButton.classList.add('input-group-text', 'bg-body-secondary');
     saveButton.setAttribute('id', idAudio);
     saveButton.onclick = function () {
-        console.log(this.id);
+        sendTranscription(this);
     }
     saveButton.setAttribute('data-bs-toggle', 'popover');
     saveButton.setAttribute('data-bs-trigger', 'focus');
@@ -129,6 +158,8 @@ function addCardAudio(idAudio, urlAudio) {
     const popoverList = [...popoverTriggerList].map(popoverTriggerEl => new bootstrap.Popover(popoverTriggerEl))
 }
 
+
+verifierForm();
 
 {/* <li class="list-group-item list-group-item-primary rounded my-2">
     <div class="fw-bold my-2 mx-2">Transcreva o que você ouviu no áudio abaixo:</div>

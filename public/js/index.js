@@ -26,6 +26,11 @@ const analytics = getAnalytics(app);
 const auth = getAuth(app);
 const firestore = getFirestore(app);
 
+async function getUserByEmail(email) {
+  console.log(urlBase + '/api/users/' + email);
+  return fetch(urlBase + '/api/users/' + email);
+}
+
 
 async function registeUserAPI(email) {
 
@@ -48,6 +53,7 @@ async function registeUserAPI(email) {
     })
     .then(newUserData => {
       // Process the newly created user data
+      loginUser();
       console.log('New User Data:', newUserData);
     })
     .catch(error => {
@@ -73,7 +79,6 @@ export function createAndLoginUser() {
           'id': user.uid,
         });
         await registeUserAPI(email);
-        console.log(user);
         console.log("Documento criado com sucesso com o id: ", docRef.id);
       } catch (e) {
         console.error("Erro ao criar o documento: ", e);
@@ -84,27 +89,40 @@ export function createAndLoginUser() {
     });
 }
 
-export function loginUser() {
+export async function loginUser() {
 
   const email = document.getElementById('email').value;
   const num_conselho = document.getElementById('num-conselho');
   const feedback = document.getElementById('feedback');
 
-  signInWithEmailAndPassword(auth, email, num_conselho.value)
-    .then((userCredential) => {
+  getUserByEmail(email).then(response => {
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+    return response.json();
+  })
+    .then(newUserData => {
+      signInWithEmailAndPassword(auth, email, num_conselho.value)
+        .then((userCredential) => {
+          const jsonAux = JSON.stringify(newUserData);
+          window.localStorage.setItem('dataUser', jsonAux);
+          window.location.href = "pages/listas_formularios.html";
+        })
+        .catch((error) => {
+          const errorCode = error.code;
+          const errorMessage = error.message;
+          console.log(errorCode);
+          console.log(errorMessage);
+          alert("Número do conselho errado ou já está vinculado a outro e-mail vinculado a outro e-mail.");
+        });
 
-      const user = userCredential.user;
-      console.log(user);
-      window.location.href = "pages/listas_formularios.html";
-      // ...
     })
-    .catch((error) => {
-      const errorCode = error.code;
-      const errorMessage = error.message;
-      console.log(errorCode);
-      console.log(errorMessage);
-      alert("Número do conselho errado ou já está vinculado a outro e-mail vinculado a outro e-mail.");
+    .catch(error => {
+      alert("Erro ao acessar o servidor. Volte em alguns minutos e tente novamente");
     });
+
+
+
 
 
 

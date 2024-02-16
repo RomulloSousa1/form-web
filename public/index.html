@@ -24,14 +24,14 @@
             </div>
             <form method="dialog" class="needs-validation" id="form-login">
                 <div class="container-fluid">
-                    <div class="mb-3 form-floating mx-5">
+                    <div class="mb-3 form-floating mx-3 mx-xl-5 ">
                         <input type="email" id="email" class="form-control" placeholder="Ex: joão@hotmail.com" required>
                         <label for="email" class="form-label">E-mail</label>
                         <div class="invalid-feedback">
                             Preencha o campo corretamente.
                         </div>
                     </div>
-                    <div class="mb-4 form-floating mx-5">
+                    <div class="mb-4 form-floating mx-3 mx-xl-5">
                         <input type="text" id="num-conselho" class="form-control" placeholder="Ex: 87458742"
                             pattern="[0-9]{8}" required>
                         <label for="num-conselho" class="form-label text-ce">Número do Conselho</label>
@@ -40,7 +40,7 @@
                         </div>
                     </div>
                     <div class="mb-2 justify-content-center row">
-                        <button form="form-login"  onclick="createAndLoginUserImported()" class="btn text-white"
+                        <button form="form-login" onclick="createAndLoginUserImported()" class="btn text-white"
                             id="btn-login">Entrar</button>
                     </div>
             </form>

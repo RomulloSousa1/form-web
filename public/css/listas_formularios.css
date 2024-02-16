@@ -1,6 +1,6 @@
 body {
-    background-color: rgb(224, 255, 255, 0.60);
-    
+    background: rgb(255,255,255);
+background: linear-gradient(90deg, rgb(216, 254, 254,.5) 62%, rgba(0,212,255,0.25) 100%);
 }
 
 #container-principal {
