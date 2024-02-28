@@ -21,90 +21,16 @@
             <a class="text-decoration-none text-black ps-5 ms-5 p-2" href="../pages/listas_formularios.html"><button
                     class="btn fs-2"><i class="bi bi-arrow-left"></i></button></a>
         </div>
-        <div class="list-group list-group-flush list-group-numbered mx-auto pt-3 mt-3" id="lista-audios">
-<ul id="audioList" class="list-group">
-</ul>
-
-<script>
-    // Lista de nomes de arquivos de áudio
-    const audioFiles = [
-        'chocolate_01.wav',
-        'ei_15.wav',
-        'madrugada_04.wav',
-        'pepino_06.wav',
-        'ui_13.wav',
-        'vagalume_20.wav',
-        'curativo_02.wav',
-        'espremedor_03.wav',
-        'manteiga_05.wav',
-        'pepino_17.wav',
-        'ui_19.wav',
-        'ventilador_10.wav',
-        'curativo_14.wav',
-        'espremedor_16.wav',
-        'oi_12.wav',
-        'ui_08.wav',
-        'vagalume_09.wav',
-        'vitamina_11.wav'
-    ];
-
-    // Caminho para a pasta de áudios
-    const audioDirectory = '/public/assets/audios/';
-
-    // Função para adicionar um elemento de áudio à lista
-    function addAudioElement(audioFileName) {
-        const listItem = document.createElement('li');
-        listItem.className = 'list-group-item list-group-item-primary rounded my-2';
-
-        const audioBlock = document.createElement('div');
-        audioBlock.className = 'fw-bold my-2 mx-2';
-        audioBlock.textContent = 'Transcreva o que você ouviu no áudio abaixo:';
-        listItem.appendChild(audioBlock);
-
-        const audioElement = document.createElement('audio');
-        audioElement.controls = true;
-        audioElement.className = 'w-100';
-        const sourceElement = document.createElement('source');
-        sourceElement.src = audioDirectory + audioFileName;
-        console.log(audioDirectory + audioFileName)
-        console.log(sourceElement.src)
-        sourceElement.type = 'audio/wav';
-        audioElement.appendChild(sourceElement);
-        listItem.appendChild(audioElement);
-
-        const inputGroup = document.createElement('div');
-        inputGroup.className = 'input-group my-2';
-
-        const transcriptionInput = document.createElement('input');
-        transcriptionInput.type = 'text';
-        transcriptionInput.id = 'transcription_' + audioFileName;
-        transcriptionInput.className = 'form-control';
-        transcriptionInput.placeholder = 'Escreva aqui';
-        transcriptionInput.required = true;
-        transcriptionInput.style.width = '80%';
-        inputGroup.appendChild(transcriptionInput);
-
-        const saveButton = document.createElement('button');
-        saveButton.dataset.bsToggle = 'popover';
-        saveButton.dataset.bsTrigger = 'focus';
-        saveButton.dataset.bsContent = 'Resposta Salva';
-        saveButton.className = 'input-group-text bg-body-secondary';
-        saveButton.innerHTML = '<i class="bi bi-floppy2-fill"></i>';
-        inputGroup.appendChild(saveButton);
-
-        listItem.appendChild(inputGroup);
-
-        document.getElementById('audioList').appendChild(listItem);
-    }
-
-    // Adiciona elementos de áudio à lista
-    audioFiles.forEach(addAudioElement);
-</script>
+        <div class="row justify-content-center my-2 mx-auto" style="height: 30px; width: 60vw;">
+            <div class="h6">Ao responder todas as questões o formulário será fechado automaticamente. Então deixa para
+                responder a ultima questão depois de revisar o formulário</div>
         </div>
-        <div class="row justify-content-around my-2 mx-auto" style="height: 70px; width: 45vw;">
-            <button class="col-3 btn btn-outline-primary" style="height: 45px; width: 130px;">Voltar</button>
-            <button class="col-3 btn btn-success" style="height: 45px; width: 130px;"> Finalizar</button>
+        <div class="list-group list-group-flush list-group-numbered mx-auto pt-3 mt-3" id="lista-cards">
+            <div class="d-flex justify-content-center" id="loading" style="height: 50vh;">
+                <div class="spinner-grow text-info" role="status" style="width: 4rem; height: 4rem;"></div>
+            </div>
         </div>
+
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"

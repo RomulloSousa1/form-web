@@ -24,12 +24,16 @@
             <div class="col-8 col-md-4 rounded mt-5 mt-md-0" id="form-1">
                 <h5 class="text-center pt-1 opacity-75 fw-normal">Formulário 1</h5>
                 <div class="text-center pt-4">Transcrição dos Áudios</div>
-                <div class="container">
+                <div class="d-flex justify-content-center pt-3 mt-3" id="loading-1" style="height: 50vh;">
+                    <div class="spinner-grow text-info" role="status" style="width: 4rem; height: 4rem;"></div>
+                </div>
+                <div class="container visually-hidden" id="container-form-1">
                     <div class="row justify-content-center mt-5">
                         <div class="col-6 col-lg-4 ps-lg-3 col-md-5">
                             <i class="bi bi-info-circle"> Status : </i>
                         </div>
-                        <div class="col-6 text-warning text-opacity-75 fw-semibold me-md-3 px-1">
+                        <div class="col-6 text-warning text-opacity-75 fw-semibold me-md-3 px-1"
+                            id="status-text-form-1">
                             Não Iniciado
                         </div>
                     </div>
@@ -43,12 +47,16 @@
             <div class="col-8 col-md-4 ms-md-5 rounded mt-5 mt-md-0" id="form-2">
                 <h5 class="text-center pt-1 opacity-75 fw-normal">Formulário 2</h5>
                 <div class="text-center pt-4">Avaliação das Transcrições</div>
-                <div class="container">
+                <div class="d-flex justify-content-center pt-3 mt-3" id="loading-2" style="height: 50vh;">
+                    <div class="spinner-grow text-info" role="status" style="width: 4rem; height: 4rem;"></div>
+                </div>
+                <div class="container visually-hidden" id="container-form-2">
                     <div class="row justify-content-center mt-5">
                         <div class="col-6 col-lg-4 ps-lg-3 col-md-5">
                             <i class="bi bi-info-circle"> Status : </i>
                         </div>
-                        <div class="col-6 text-warning text-opacity-75 fw-semibold me-md-3 px-1">
+                        <div class="col-6 text-warning text-opacity-75 fw-semibold me-md-3 px-1"
+                            id="status-text-form-2">
                             Não Iniciado
                         </div>
                     </div>
@@ -76,7 +84,7 @@
         integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
         crossorigin="anonymous"></script>
 
-    <script type="module" src="../js/indexImported.js">
+    <script type="module" src="../js/lista_formularios.js">
     </script>
 </body>
 

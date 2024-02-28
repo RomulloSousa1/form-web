@@ -2,12 +2,12 @@
     height: 78vh;
 }
 
-#lista-audios {
+#lista-cards {
     width: 45vw;
 }
 
 @media only screen and (max-width: 767px) {
-    #lista-audios {
+    #lista-cards {
         width: 70vw;
     }
 }

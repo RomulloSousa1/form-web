@@ -33,6 +33,35 @@ function verifierForm() {
     }
 }
 
+async function sendScore(element) {
+
+    await fetch(apiUrl + '/api/users/' + dataUser.id + '/transcriptions/' + element.id, {
+        method: 'PATCH',
+        headers: {
+            'Content-Type': 'application/json', 'User-Agent': 'insomnia/8.6.1',
+        },
+        body: JSON.stringify({
+            "score": parseFloat(element.parentElement.children[0].value).toFixed(1),
+        })
+    })
+        .then(response => {
+            if (!response.ok) {
+                console.log({
+                    "score": -Number(element.parentElement.children[0].value).toFixed(1),
+                });
+                throw new Error("Sem Resposta");
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log(data);
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+}
+
+
 async function sendTranscription(element) {
     console.log(element.id);
     console.log(element.parentElement.children[0].value);
@@ -79,25 +108,84 @@ async function getAllAudios() {
 }
 
 async function getAllTranscriptions() {
-    auth.onAuthStateChanged((user) => {
-        fetch(apiUrl + '/api/users/' + dataUser.id + '/transcriptions')
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Sem resposta');
-                }
-                return response.json();
+
+    fetch(apiUrl + '/api/users/' + dataUser.id + '/transcriptions')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Sem resposta');
+            }
+            return response.json();
+        })
+        .then(data => {
+            data.map((transcriptions) => {
+                addCardTranscription(transcriptions.id, transcriptions.answer, transcriptions.audio.template);
             })
-            .then(data => {
-                console.log(data);
-            })
-            .catch(error => {
-                console.error('Error:', error);
-            });
-    })
+        })
+        .catch(error => {
+            console.error('Error:', error);
+
+        });
+}
+
+function addCardTranscription(idTranscription, answer, template) {
+    const lista = document.getElementById('lista-cards');
+    const loading = document.getElementById('loading');
+
+    const li = document.createElement("li");
+    li.classList.add('list-group-item', 'list-group-item-primary', 'rounded', 'my-2');
+
+    const divTitle = document.createElement("div");
+    divTitle.classList.add('fw-bold', 'my-2', 'mx-2');
+    divTitle.textContent = 'Dê uma pontuação (Entre 0 a 100) correspondente à similaridade das respostas:';
+
+    li.appendChild(divTitle);
+
+    const templateAndAnswer = document.createElement("div");
+    templateAndAnswer.classList.add('w-100', 'my-2', 'mx-2');
+    templateAndAnswer.textContent = "Gabarito para este áudio: " + template + ". Sua resposta para esse áudio: " + answer;
+
+    li.appendChild(templateAndAnswer);
+
+    const divResponse = document.createElement("div");
+    divResponse.classList.add('input-group', 'my-2');
+
+    li.appendChild(divResponse);
+
+    const input = document.createElement("input");
+    input.classList.add('form-control');
+    input.setAttribute('type', 'number');
+    input.setAttribute('placeholder', 'Escreva aqui');
+    input.setAttribute('required', '');
+
+    divResponse.appendChild(input);
+
+    const saveButton = document.createElement('button');
+    saveButton.classList.add('input-group-text', 'bg-body-secondary');
+    saveButton.setAttribute('id', idTranscription);
+    saveButton.onclick = function () {
+        sendScore(this);
+    }
+    saveButton.setAttribute('data-bs-toggle', 'popover');
+    saveButton.setAttribute('data-bs-trigger', 'focus');
+    saveButton.setAttribute('data-bs-content', 'Resposta Salva');
+
+    divResponse.appendChild(saveButton);
+
+    const icon = document.createElement('i');
+    icon.classList.add('bi', 'bi-floppy2-fill');
+
+    saveButton.appendChild(icon);
+
+    loading.classList.add('visually-hidden');
+    lista.appendChild(li);
+
+    const popoverTriggerList = document.querySelectorAll('[data-bs-toggle="popover"]')
+    const popoverList = [...popoverTriggerList].map(popoverTriggerEl => new bootstrap.Popover(popoverTriggerEl))
+
 }
 
 function addCardAudio(idAudio, urlAudio) {
-    const lista = document.getElementById('lista-audios');
+    const lista = document.getElementById('lista-cards');
     const loading = document.getElementById('loading');
 
     const li = document.createElement("li");
@@ -153,11 +241,13 @@ function addCardAudio(idAudio, urlAudio) {
 
     loading.classList.add('visually-hidden');
     lista.appendChild(li);
-
     const popoverTriggerList = document.querySelectorAll('[data-bs-toggle="popover"]')
     const popoverList = [...popoverTriggerList].map(popoverTriggerEl => new bootstrap.Popover(popoverTriggerEl))
+
 }
 
+const popoverTriggerList = document.querySelectorAll('[data-bs-toggle="popover"]')
+const popoverList = [...popoverTriggerList].map(popoverTriggerEl => new bootstrap.Popover(popoverTriggerEl))
 
 verifierForm();
 
