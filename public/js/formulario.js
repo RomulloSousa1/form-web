@@ -33,23 +33,54 @@ function verifierForm() {
     }
 }
 
-async function sendScore(element) {
 
+async function sendScore(element, update) {
     await fetch(apiUrl + '/api/users/' + dataUser.id + '/transcriptions/' + element.id, {
         method: 'PATCH',
+        mode: 'cors',
         headers: {
-            'Content-Type': 'application/json', 'User-Agent': 'insomnia/8.6.1',
+            "Access-Control-Allow-Headers": "Content-Type",
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Methods': 'POST,PATCH,OPTIONS'
         },
         body: JSON.stringify({
-            "score": parseFloat(element.parentElement.children[0].value).toFixed(1),
+            "score": element.parentElement.children[0].value,
         })
     })
         .then(response => {
             if (!response.ok) {
-                console.log({
-                    "score": -Number(element.parentElement.children[0].value).toFixed(1),
-                });
+
                 throw new Error("Sem Resposta");
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (update == false) {
+                element.parentElement.children[2].setAttribute('data-bs-content', 'Resposta Editada');
+                element.parentElement.children[2].classList.remove('visually-hidden');
+                element.classList.add('visually-hidden');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+}
+
+async function editTranscription(element) {
+    await fetch(apiUrl + '/api/users/' + dataUser.id + '/transcriptions/' + element.id, {
+        method: 'PATCH',
+        mode: 'cors',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            "answer": element.parentElement.children[0].value,
+        })
+    })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Sem resposta');
             }
             return response.json();
         })
@@ -63,8 +94,6 @@ async function sendScore(element) {
 
 
 async function sendTranscription(element) {
-    console.log(element.id);
-    console.log(element.parentElement.children[0].value);
     await fetch(apiUrl + '/api/users/' + dataUser.id + '/transcriptions', {
         method: 'POST',
         headers: {
@@ -82,7 +111,9 @@ async function sendTranscription(element) {
             return response.json();
         })
         .then(data => {
-            console.log(data);
+            element.parentElement.children[2].setAttribute('id', data);
+            element.parentElement.children[2].classList.remove('visually-hidden');
+            element.classList.add('visually-hidden');
         })
         .catch(error => {
             console.error('Error:', error);
@@ -98,9 +129,42 @@ async function getAllAudios() {
             return response.json();
         })
         .then(data => {
-            data.map((audios) => {
-                addCardAudio(audios.id, audios.url);
-            });
+            fetch(apiUrl + '/api/users/' + dataUser.id + '/transcriptions')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Sem resposta');
+                    }
+                    return response.json();
+                })
+                .then(dataTranscription => {
+                    for (var x = 0; x < data.length; x++) {
+                        console.log(data[x]);
+                        var hasTranscription = false;
+                        console.log(hasTranscription);
+                        if (dataTranscription.length > 0) {
+                            for (var y = 0; y < dataTranscription.length; y++) {
+                                if (dataTranscription[y].audio.id == data[x].id) {
+                                    hasTranscription = true;
+                                    break;
+                                }
+                            }
+                            if (hasTranscription == true) {
+                                addCardAudio(data[x].id, data[x].url, dataTranscription[y].id, dataTranscription[y].answer);
+                            } else {
+                                addCardAudio(data[x].id, data[x].url,);
+                            }
+                        }
+                        else {
+                            addCardAudio(data[x].id, data[x].url,);
+                        }
+
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+
+                });
+
         })
         .catch(error => {
             console.error('Error:', error);
@@ -118,7 +182,7 @@ async function getAllTranscriptions() {
         })
         .then(data => {
             data.map((transcriptions) => {
-                addCardTranscription(transcriptions.id, transcriptions.answer, transcriptions.audio.template);
+                addCardTranscription(transcriptions.id, transcriptions.answer, transcriptions.audio.template, transcriptions.score);
             })
         })
         .catch(error => {
@@ -127,7 +191,7 @@ async function getAllTranscriptions() {
         });
 }
 
-function addCardTranscription(idTranscription, answer, template) {
+function addCardTranscription(idTranscription, answer, template, score) {
     const lista = document.getElementById('lista-cards');
     const loading = document.getElementById('loading');
 
@@ -142,7 +206,7 @@ function addCardTranscription(idTranscription, answer, template) {
 
     const templateAndAnswer = document.createElement("div");
     templateAndAnswer.classList.add('w-100', 'my-2', 'mx-2');
-    templateAndAnswer.textContent = "Gabarito para este áudio: " + template + ". Sua resposta para esse áudio: " + answer;
+    templateAndAnswer.innerHTML = "Gabarito para este áudio: " + template.bold() + ". Sua resposta para esse áudio: " + answer.bold();
 
     li.appendChild(templateAndAnswer);
 
@@ -155,6 +219,9 @@ function addCardTranscription(idTranscription, answer, template) {
     input.classList.add('form-control');
     input.setAttribute('type', 'number');
     input.setAttribute('placeholder', 'Escreva aqui');
+    if (score != null) {
+        input.value = score;
+    }
     input.setAttribute('required', '');
 
     divResponse.appendChild(input);
@@ -163,7 +230,7 @@ function addCardTranscription(idTranscription, answer, template) {
     saveButton.classList.add('input-group-text', 'bg-body-secondary');
     saveButton.setAttribute('id', idTranscription);
     saveButton.onclick = function () {
-        sendScore(this);
+        sendScore(this, false);
     }
     saveButton.setAttribute('data-bs-toggle', 'popover');
     saveButton.setAttribute('data-bs-trigger', 'focus');
@@ -171,10 +238,33 @@ function addCardTranscription(idTranscription, answer, template) {
 
     divResponse.appendChild(saveButton);
 
-    const icon = document.createElement('i');
-    icon.classList.add('bi', 'bi-floppy2-fill');
+    const editButton = document.createElement('button');
+    editButton.classList.add('input-group-text', 'bg-body-secondary');
+    editButton.setAttribute('id', idTranscription);
+    editButton.onclick = function () {
+        sendScore(this, false);
+    }
+    editButton.setAttribute('data-bs-toggle', 'popover');
+    editButton.setAttribute('data-bs-trigger', 'focus');
+    editButton.setAttribute('data-bs-content', 'Resposta Editada');
 
-    saveButton.appendChild(icon);
+    divResponse.appendChild(editButton);
+
+    const iconAdd = document.createElement('i');
+    iconAdd.classList.add('bi', 'bi-floppy2-fill');
+
+    saveButton.appendChild(iconAdd);
+
+    const iconEdit = document.createElement('i');
+    iconEdit.classList.add('bi', 'bi-pencil-fill');
+
+    editButton.appendChild(iconEdit);
+
+    if (score != null) {
+        saveButton.classList.add('visually-hidden');
+    } else {
+        editButton.classList.add('visually-hidden');
+    }
 
     loading.classList.add('visually-hidden');
     lista.appendChild(li);
@@ -184,7 +274,7 @@ function addCardTranscription(idTranscription, answer, template) {
 
 }
 
-function addCardAudio(idAudio, urlAudio) {
+function addCardAudio(idAudio, urlAudio, idTranscription, template) {
     const lista = document.getElementById('lista-cards');
     const loading = document.getElementById('loading');
 
@@ -211,6 +301,7 @@ function addCardAudio(idAudio, urlAudio) {
 
     const divResponse = document.createElement("div");
     divResponse.classList.add('input-group', 'my-2');
+    divResponse.setAttribute('id', 'div-response');
 
     li.appendChild(divResponse);
 
@@ -219,8 +310,12 @@ function addCardAudio(idAudio, urlAudio) {
     input.setAttribute('type', 'text');
     input.setAttribute('placeholder', 'Escreva aqui');
     input.setAttribute('required', '');
+    if (template != null) {
+        input.value = template;
+    }
 
     divResponse.appendChild(input);
+
 
     const saveButton = document.createElement('button');
     saveButton.classList.add('input-group-text', 'bg-body-secondary');
@@ -234,10 +329,35 @@ function addCardAudio(idAudio, urlAudio) {
 
     divResponse.appendChild(saveButton);
 
-    const icon = document.createElement('i');
-    icon.classList.add('bi', 'bi-floppy2-fill');
+    const iconAdd = document.createElement('i');
+    iconAdd.classList.add('bi', 'bi-floppy2-fill');
 
-    saveButton.appendChild(icon);
+    saveButton.appendChild(iconAdd);
+
+
+    const editButton = document.createElement('button');
+    editButton.classList.add('input-group-text', 'bg-body-secondary');
+    editButton.onclick = function () {
+        editTranscription(this);
+    }
+    editButton.setAttribute('data-bs-toggle', 'popover');
+    editButton.setAttribute('data-bs-trigger', 'focus');
+    editButton.setAttribute('data-bs-content', 'Resposta Editada');
+
+    divResponse.appendChild(editButton);
+
+
+    const iconEdit = document.createElement('i');
+    iconEdit.classList.add('bi', 'bi-pencil-fill');
+
+    editButton.appendChild(iconEdit);
+
+    if (idTranscription != null) {
+        editButton.setAttribute('id', idTranscription);
+        saveButton.classList.add('visually-hidden');
+    } else {
+        editButton.classList.add('visually-hidden');
+    }
 
     loading.classList.add('visually-hidden');
     lista.appendChild(li);

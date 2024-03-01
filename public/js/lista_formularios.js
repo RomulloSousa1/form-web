@@ -39,6 +39,8 @@ async function verifierForm() {
     var containerForm1 = document.getElementById('container-form-1');
     var containerForm2 = document.getElementById('container-form-2');
 
+
+
     getAllAudios()
         .then(response => {
             if (!response.ok) {
@@ -58,15 +60,25 @@ async function verifierForm() {
                     if (dataTranscriptions.length >= dataAudios.length) {
                         statusTextForm1.textContent = 'Finalizado';
                         trocaClasse(statusTextForm1, 'text-warning', 'text-sucess');
+                        var hasNull = false;
+                        var hasScore = false;
                         for (var transcriptionIndex in dataTranscriptions) {
-                            console.log(dataTranscriptions[transcriptionIndex]);
                             if (dataTranscriptions[transcriptionIndex].score != null) {
-                                statusTextForm2.textContent = 'Iniciado';
-                                trocaClasse(statusTextForm2, 'text-warning', 'text-info');
-                                break;
-
+                                hasScore = true;
+                            } else if (dataTranscriptions[transcriptionIndex].score == null) {
+                                hasNull = true;
                             }
                         }
+                        if (hasScore == true && hasNull == true) {
+                            statusTextForm2.textContent = 'Iniciado';
+                            trocaClasse(statusTextForm2, 'text-warning', 'text-info');
+                        } else if (hasScore == true && hasNull == false) {
+                            statusTextForm2.textContent = 'Finalizado';
+                            btnForm2.classList.add('visually-hidden');
+                            trocaClasse(statusTextForm2, 'text-warning', 'text-sucess');
+                        }
+                        // statusTextForm2.textContent = 'Iniciado';
+                        // trocaClasse(statusTextForm2, 'text-warning', 'text-info');
                         btnForm1.classList.add('visually-hidden');
                     } else if (dataTranscriptions.length >= 0) {
                         statusTextForm1.textContent = "Iniciado";
