@@ -81,13 +81,14 @@ async function verifierForm() {
                         // trocaClasse(statusTextForm2, 'text-warning', 'text-info');
                         btnForm1.classList.add('visually-hidden');
                     } else if (dataTranscriptions.length > 0) {
+                        statusTextForm1.textContent = "Iniciado";
                         statusTextForm2.textContent = "Bloqueado";
                         btnForm2.classList.add('visually-hidden');
-                        trocaClasse(statusTextForm2, 'text-warning', 'text-danger');
-                    } else {
-                        statusTextForm1.textContent = "Iniciado";
-                        btnForm2.classList.add('visually-hidden');
                         trocaClasse(statusTextForm1, 'text-warning', 'text-info');
+                        trocaClasse(statusTextForm2, 'text-warning', 'text-danger');
+                    } else {                      
+                        statusTextForm2.textContent = "Bloqueado";
+                        btnForm2.classList.add('visually-hidden');
                         trocaClasse(statusTextForm2, 'text-warning', 'text-danger');
                     }
                     loading1.classList.add('visually-hidden');
