@@ -88,6 +88,7 @@ async function verifierForm() {
                         statusTextForm1.textContent = "Iniciado";
                         btnForm2.classList.add('visually-hidden');
                         trocaClasse(statusTextForm1, 'text-warning', 'text-info');
+                        trocaClasse(statusTextForm2, 'text-warning', 'text-danger');
                     }
                     loading1.classList.add('visually-hidden');
                     loading2.classList.add('visually-hidden');
