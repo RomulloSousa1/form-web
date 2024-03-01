@@ -44,21 +44,7 @@ async function registeUserAPI(email) {
     })
   };
 
-  return fetch(urlBase + '/api/register', options)
-    .then(response => {
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
-      return response.json();
-    })
-    .then(newUserData => {
-      // Process the newly created user data
-      loginUser();
-      console.log('New User Data:', newUserData);
-    })
-    .catch(error => {
-      console.error('Error:', error);
-    });
+  return fetch(urlBase + '/api/register', options);
 }
 
 
@@ -66,27 +52,44 @@ async function registeUserAPI(email) {
 
 export function createAndLoginUser() {
   const email = document.getElementById('email').value;
-  const num_conselho = document.getElementById('num-conselho').value;
-
-
-  createUserWithEmailAndPassword(auth, email, num_conselho)
-    .then(async (userCredential) => {
-      const user = userCredential.user;
-      try {
-        const docRef = await addDoc(collection(firestore, "users"), {
-          'email': email,
-          'num-conselho': num_conselho,
-          'id': user.uid,
-        });
-        await registeUserAPI(email);
-        console.log("Documento criado com sucesso com o id: ", docRef.id);
-      } catch (e) {
-        console.error("Erro ao criar o documento: ", e);
+  const num_conselho = document.getElementById('num-conselho');
+  if (num_conselho.validity.valid == true) {
+    registeUserAPI(email).then(response => {
+      if (!response.ok) {
+        throw new Error(response.status);
       }
+      return response.json();
     })
-    .catch((error) => {
-      loginUser();
-    });
+      .then(newUserData => {
+        createUserWithEmailAndPassword(auth, email, num_conselho.value)
+          .then(async (userCredential) => {
+            const user = userCredential.user;
+            try {
+              const docRef = await addDoc(collection(firestore, "users"), {
+                'email': email,
+                'num-conselho': num_conselho.value,
+                'id': user.uid,
+              });
+              loginUser();
+              console.log("Documento criado com sucesso com o id: ", docRef.id);
+            } catch (e) {
+              console.error("Erro ao criar o documento: ", e);
+            }
+          })
+          .catch((error) => {
+            console.log(error);
+            loginUser();
+          });
+      })
+      .catch(error => {
+        if (error.message == '409') {
+          loginUser();
+        } else {
+          alert("Erro ao acessar o servidor. Volte em alguns minutos e tente novamente");
+        }
+      });
+  }
+
 }
 
 export async function loginUser() {

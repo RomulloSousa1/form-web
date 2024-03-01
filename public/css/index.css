@@ -19,6 +19,14 @@
     background-color: lightskyblue;
 }
 
+.form-floating > .form-control:focus {
+    &::placeholder {
+      color: gray;
+    }
+  }
+
+
+
 @media only screen and (max-width: 767px) {
     #container-login {
         height: 85vh;
