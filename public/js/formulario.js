@@ -242,7 +242,7 @@ function addCardTranscription(idTranscription, answer, template, score) {
     editButton.classList.add('input-group-text', 'bg-body-secondary');
     editButton.setAttribute('id', idTranscription);
     editButton.onclick = function () {
-        sendScore(this, false);
+        sendScore(this, true);
     }
     editButton.setAttribute('data-bs-toggle', 'popover');
     editButton.setAttribute('data-bs-trigger', 'focus');
