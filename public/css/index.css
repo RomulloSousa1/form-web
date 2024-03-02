@@ -30,6 +30,17 @@
         height: 72vh;
         width: 70vw;
     }
+
+    #email,
+    #num-conselho {
+        width: 50vw;
+    }
+
+    #btn-login {
+        width: 50%;
+        background-color: lightskyblue;
+    }
+
 }
 
 
