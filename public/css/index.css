@@ -19,15 +19,21 @@
     background-color: lightskyblue;
 }
 
-.form-floating > .form-control:focus {
+.form-floating>.form-control:focus {
     &::placeholder {
-      color: gray;
+        color: gray;
     }
-  }
+}
+
+@media only screen and (max-width: 500px) {
+    #container-login {
+        height: 72vh;
+        width: 70vw;
+    }
+}
 
 
-
-@media only screen and (max-width: 767px) {
+@media only screen and (max-width: 376px) {
     #container-login {
         height: 85vh;
         width: 70vw;
