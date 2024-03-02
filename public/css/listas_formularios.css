@@ -1,6 +1,6 @@
 body {
-    background: rgb(255,255,255);
-background: linear-gradient(90deg, rgb(216, 254, 254,.5) 32%, rgba(0,212,255,0.1) 80%);
+    background: rgb(255, 255, 255);
+    background: linear-gradient(90deg, rgb(216, 254, 254, .5) 32%, rgba(0, 212, 255, 0.1) 80%);
 }
 
 #container-principal {
@@ -12,6 +12,7 @@ background: linear-gradient(90deg, rgb(216, 254, 254,.5) 32%, rgba(0,212,255,0.1
     footer {
         height: 40vh;
     }
+
 }
 
 @media only screen and (min-width: 768px) {
@@ -19,6 +20,14 @@ background: linear-gradient(90deg, rgb(216, 254, 254,.5) 32%, rgba(0,212,255,0.1
         position: absolute;
         bottom: 0;
     }
+}
+
+@media only screen and (min-height: 768px) {
+
+    #container-principal {
+        height: 58vh;
+    }
+
 }
 
 #row-principal {
