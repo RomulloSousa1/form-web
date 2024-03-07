@@ -6,9 +6,31 @@
     width: 45vw;
 }
 
+#title {
+    height: 15vh;
+    width: 80vw;
+}
+
+#instruction {
+    height: 35vh;
+    width: 75vw;
+}
+
+    
+
 @media only screen and (max-width: 767px) {
     #lista-cards {
-        width: 70vw;
+        width: 80vw;
+    }
+
+    #instruction {
+        height: 50vh;
+        width: 75vw;
+    }
+
+    #title {
+        height: 30vh;
+        width: 80vw;
     }
 }
 

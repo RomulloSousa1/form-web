@@ -181,6 +181,7 @@ async function getAllTranscriptions() {
             return response.json();
         })
         .then(data => {
+            addTitleTranscription();
             data.map((transcriptions) => {
                 addCardTranscription(transcriptions.id, transcriptions.answer, transcriptions.audio.template, transcriptions.score);
             })
@@ -189,7 +190,14 @@ async function getAllTranscriptions() {
             console.error('Error:', error);
 
         });
+} 
+
+function addTitleTranscription() {
+    const instruction = document.getElementById('instruction');
+    instruction.innerHTML = "<strong>Instruções:</strong><br><br> Dê uma nota de <strong>0 a 100</strong> para a similaridade entre os audios e as transcrições, considerando as trocas e distorções dos fonemas, sendo 0 para todos os fonemas com trocas e/ou distorções e 100 para todos os fonemas corretos.<br> <br>Exemplos:<br><br>bola - bola(100)<br>bola - cola(75)<br>bola - cole(50)<br>bola - cale(25)<br>bola - caso(0)";
+    instruction.classList.remove('visually-hidden');
 }
+
 
 function addCardTranscription(idTranscription, answer, template, score) {
     const lista = document.getElementById('lista-cards');
@@ -198,14 +206,10 @@ function addCardTranscription(idTranscription, answer, template, score) {
     const li = document.createElement("li");
     li.classList.add('list-group-item', 'list-group-item-primary', 'rounded', 'my-2');
 
-    const divTitle = document.createElement("div");
-    divTitle.classList.add('fw-bold', 'my-2', 'mx-2');
-    divTitle.textContent = 'Dê uma pontuação (Entre 0 a 100) correspondente à similaridade das respostas:';
-
-    li.appendChild(divTitle);
+   
 
     const templateAndAnswer = document.createElement("div");
-    templateAndAnswer.classList.add('w-100', 'my-2', 'mx-2');
+    templateAndAnswer.classList.add('w-100', 'my-2', 'mx-2','h6');
     templateAndAnswer.innerHTML = "Gabarito para este áudio: " + template.bold() + ". Sua resposta para esse áudio: " + answer.bold();
 
     li.appendChild(templateAndAnswer);
@@ -274,9 +278,13 @@ function addCardTranscription(idTranscription, answer, template, score) {
 
 }
 
+
+
+
 function addCardAudio(idAudio, urlAudio, idTranscription, template) {
     const lista = document.getElementById('lista-cards');
     const loading = document.getElementById('loading');
+
 
     const li = document.createElement("li");
     li.classList.add('list-group-item', 'list-group-item-primary', 'rounded', 'my-2');
