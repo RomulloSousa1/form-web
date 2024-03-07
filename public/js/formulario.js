@@ -291,7 +291,7 @@ function addCardAudio(idAudio, urlAudio, idTranscription, template) {
 
     const divTitle = document.createElement("div");
     divTitle.classList.add('fw-bold', 'my-2', 'mx-2');
-    divTitle.textContent = 'Transcreva o que você ouviu no áudio abaixo:';
+    divTitle.innerHTML = 'Transcreva o que <strong>EXATAMENTE</strong> você ouviu no áudio abaixo:';
 
     li.appendChild(divTitle);
 
