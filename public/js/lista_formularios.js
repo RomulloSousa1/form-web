@@ -1,6 +1,5 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
-import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js'
-import { getFirestore, collection, addDoc, setDoc } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js'
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+import { getFirestore, collection, addDoc, setDoc, getDocs, getDoc, doc, query, where, orderBy } from 'https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js'
 
 
 const firebaseConfig = {
@@ -15,7 +14,6 @@ const firebaseConfig = {
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
 const firestore = getFirestore(app);
 
 const apiUrl = "https://appraxi-evaluation-form.onrender.com";
@@ -40,80 +38,72 @@ async function verifierForm() {
     var containerForm2 = document.getElementById('container-form-2');
 
 
+    const audiosList = await getAllAudios();
+    const userTranscription = await getAllTranscriptions();
 
-    getAllAudios()
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Sem resposta');
+
+    if (userTranscription.length >= audiosList.length) {
+        statusTextForm1.textContent = 'Finalizado';
+        trocaClasse(statusTextForm1, 'text-warning', 'text-sucess');
+        var hasNull = false;
+        var hasScore = false;
+
+        for (var transcriptionIndex in userTranscription) {
+            if (userTranscription[transcriptionIndex].score != null) {
+                hasScore = true;
+            } else if (userTranscription[transcriptionIndex].score == null) {
+                hasNull = true;
             }
-            return response.json();
-        })
-        .then(dataAudios => {
-            getAllTranscriptions()
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Sem resposta');
-                    }
-                    return response.json();
-                })
-                .then(dataTranscriptions => {
-                    if (dataTranscriptions.length >= dataAudios.length) {
-                        statusTextForm1.textContent = 'Finalizado';
-                        trocaClasse(statusTextForm1, 'text-warning', 'text-sucess');
-                        var hasNull = false;
-                        var hasScore = false;
-                        for (var transcriptionIndex in dataTranscriptions) {
-                            if (dataTranscriptions[transcriptionIndex].score != null) {
-                                hasScore = true;
-                            } else if (dataTranscriptions[transcriptionIndex].score == null) {
-                                hasNull = true;
-                            }
-                        }
-                        if (hasScore == true && hasNull == true) {
-                            statusTextForm2.textContent = 'Iniciado';
-                            trocaClasse(statusTextForm2, 'text-warning', 'text-info');
-                        } else if (hasScore == true && hasNull == false) {
-                            statusTextForm2.textContent = 'Finalizado';
-                            btnForm2.classList.add('visually-hidden');
-                            trocaClasse(statusTextForm2, 'text-warning', 'text-sucess');
-                        }
-                        // statusTextForm2.textContent = 'Iniciado';
-                        // trocaClasse(statusTextForm2, 'text-warning', 'text-info');
-                        btnForm1.classList.add('visually-hidden');
-                    } else if (dataTranscriptions.length > 0) {
-                        statusTextForm1.textContent = "Iniciado";
-                        statusTextForm2.textContent = "Bloqueado";
-                        btnForm2.classList.add('visually-hidden');
-                        trocaClasse(statusTextForm1, 'text-warning', 'text-info');
-                        trocaClasse(statusTextForm2, 'text-warning', 'text-danger');
-                    } else {                      
-                        statusTextForm2.textContent = "Bloqueado";
-                        btnForm2.classList.add('visually-hidden');
-                        trocaClasse(statusTextForm2, 'text-warning', 'text-danger');
-                    }
-                    loading1.classList.add('visually-hidden');
-                    loading2.classList.add('visually-hidden');
-                    containerForm1.classList.remove('visually-hidden');
-                    containerForm2.classList.remove('visually-hidden');
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-
-                });
-        })
-        .catch(error => {
-            console.error('Error:', error);
-        });
+        }
+        if (hasScore == true && hasNull == true) {
+            statusTextForm2.textContent = 'Iniciado';
+            trocaClasse(statusTextForm2, 'text-warning', 'text-info');
+        } else if (hasScore == true && hasNull == false) {
+            statusTextForm2.textContent = 'Finalizado';
+            btnForm2.classList.add('visually-hidden');
+            trocaClasse(statusTextForm2, 'text-warning', 'text-sucess');
+        }
+        // statusTextForm2.textContent = 'Iniciado';
+        // trocaClasse(statusTextForm2, 'text-warning', 'text-info');
+        btnForm1.classList.add('visually-hidden');
+    } else if (userTranscription.length > 0) {
+        statusTextForm1.textContent = "Iniciado";
+        statusTextForm2.textContent = "Bloqueado";
+        btnForm2.classList.add('visually-hidden');
+        trocaClasse(statusTextForm1, 'text-warning', 'text-info');
+        trocaClasse(statusTextForm2, 'text-warning', 'text-danger');
+    } else {
+        statusTextForm2.textContent = "Bloqueado";
+        btnForm2.classList.add('visually-hidden');
+        trocaClasse(statusTextForm2, 'text-warning', 'text-danger');
+    }
+    loading1.classList.add('visually-hidden');
+    loading2.classList.add('visually-hidden');
+    containerForm1.classList.remove('visually-hidden');
+    containerForm2.classList.remove('visually-hidden');
 
 }
 
 async function getAllAudios() {
-    return fetch(apiUrl + '/api/audios');
+    const audiosRef = collection(firestore, 'audios');
+    var audios = [];
+    await getDocs(audiosRef).then((querySnapshot) => {
+        querySnapshot.forEach((doc) => {
+            audios.push(doc.data());
+        })
+    });
+    return audios;
 }
 
 async function getAllTranscriptions() {
-
-    return fetch(apiUrl + '/api/users/' + dataUser.id + '/transcriptions');
+    const transcriptionsRef = collection(firestore, 'transcriptions');
+    var transcriptions = [];
+    await getDocs(query(transcriptionsRef, where('userId', '==', dataUser.id), orderBy("audioId"))).then(querySnapshot => {
+        querySnapshot.forEach((doc) => {
+            transcriptions.push(doc.data());
+        })
+    })
+    return transcriptions;
 }
 
 verifierForm();
