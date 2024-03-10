@@ -21,21 +21,32 @@ const firestore = getFirestore(app);
 
 
 export function createAndLoginUser() {
-  const email = document.getElementById('email').value;
+  const email = document.getElementById('email');
   const num_conselho = document.getElementById('num-conselho');
+  const btn_login = document.getElementById('btn-login');
+  // <div class="spinner-grow text-info visually-hidden" role="status"
+  //   style="width: 4rem; height: 4rem;"></div>
 
+  if (num_conselho.validity.valid == true && email.validity.valid == true) {
+    btn_login.textContent = '';
 
-  if (num_conselho.validity.valid == true) {
+    const loading = document.createElement("div");
+    loading.classList.add('spinner-border');
+    loading.setAttribute('role','status');
+    loading.style.width = "1.5rem";
+    loading.style.height = "1.5rem";
 
-    createUserWithEmailAndPassword(auth, email, num_conselho.value)
+    btn_login.appendChild(loading);
+
+      createUserWithEmailAndPassword(auth, email.value, num_conselho.value)
       .then(async (userCredential) => {
         const user = userCredential.user;
         try {
           const docRef = await setDoc(doc(firestore, "users", user.uid), {
-            'email': email,
+            'email': email.value,
             'num-conselho': num_conselho.value,
             'id': user.uid,
-            'transcriptions' : [],
+            'transcriptions': [],
           });
           loginUser();
         } catch (e) {
@@ -54,13 +65,13 @@ export function createAndLoginUser() {
 export async function loginUser() {
 
   const email = document.getElementById('email').value;
-  const num_conselho = document.getElementById('num-conselho');
+  const num_conselho = document.getElementById('num-conselho').value;
 
 
-  signInWithEmailAndPassword(auth, email, num_conselho.value)
+  signInWithEmailAndPassword(auth, email, num_conselho)
     .then((userCredential) => {
       const jsonAux = JSON.stringify({
-        'email' : userCredential.user.email,
+        'email': userCredential.user.email,
         'id': userCredential.user.uid,
       });
       console.log(jsonAux);
