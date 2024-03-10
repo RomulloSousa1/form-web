@@ -163,11 +163,10 @@ function addCardTranscription(idTranscription, answer, template, score) {
 
     const li = document.createElement("li");
     li.classList.add('list-group-item', 'list-group-item-primary', 'rounded', 'my-2');
-
-
+    
 
     const templateAndAnswer = document.createElement("div");
-    templateAndAnswer.classList.add('w-100', 'my-2', 'mx-2', 'h6');
+    templateAndAnswer.classList.add('w-100', 'my-3', 'mx-2', 'h6');
     templateAndAnswer.innerHTML = "Gabarito para este áudio: " + template.bold() + ". Sua resposta para esse áudio: " + answer.bold();
 
     li.appendChild(templateAndAnswer);

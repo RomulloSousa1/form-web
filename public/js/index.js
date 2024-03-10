@@ -35,6 +35,7 @@ export function createAndLoginUser() {
     loading.setAttribute('role','status');
     loading.style.width = "1.5rem";
     loading.style.height = "1.5rem";
+    loading.setAttribute('id','loading-login');
 
     btn_login.appendChild(loading);
 
@@ -66,6 +67,8 @@ export async function loginUser() {
 
   const email = document.getElementById('email').value;
   const num_conselho = document.getElementById('num-conselho').value;
+  const btn_login = document.getElementById('btn-login');
+  const loading_login = document.getElementById('loading-login');
 
 
   signInWithEmailAndPassword(auth, email, num_conselho)
@@ -79,6 +82,8 @@ export async function loginUser() {
       window.location.href = "pages/listas_formularios.html";
     })
     .catch((error) => {
+      btn_login.removeChild(loading_login);
+      btn_login.textContent = "Entrar";
       const errorCode = error.code;
       const errorMessage = error.message;
       console.log(errorCode);
