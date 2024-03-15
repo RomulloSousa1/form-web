@@ -1,12 +1,12 @@
 #container-login {
-    height: 73vh;
+    height: 75vh;
     width: 30vw;
     box-shadow: -1px -1px 10px 1px lightgray, 1px 1px 10px 1px lightgray;
 }
 
 
 #container-principal {
-    height: 100vh;
+    height: 97vh;
 }
 
 #email,
@@ -27,7 +27,7 @@
 
 @media only screen and (max-width: 500px) {
     #container-login {
-        height: 72vh;
+        height: 80vh;
         width: 70vw;
     }
 
@@ -46,8 +46,8 @@
 
 @media only screen and (max-width: 376px) {
     #container-login {
-        height: 85vh;
-        width: 70vw;
+        height: 90vh;
+        width: 72vw;
     }
 
     #email,
